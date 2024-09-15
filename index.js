@@ -32,7 +32,7 @@ app.use("/variants", authenticateToken, require("./routes/variant"));
 app.use("/products", authenticateToken, require("./routes/product"));
 app.use("/couponCodes", authenticateToken, require("./routes/couponCode"));
 app.use("/posters", authenticateToken, require("./routes/poster"));
-app.use("/users", authenticateToken, require("./routes/user"));
+app.use("/users", require("./routes/user"));
 app.use("/orders", authenticateToken, require("./routes/order"));
 app.use("/payment", authenticateToken, require("./routes/payment"));
 app.use("/notification", authenticateToken, require("./routes/notification"));
