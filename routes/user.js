@@ -4,7 +4,29 @@ const router = express.Router();
 const User = require("../model/user");
 const bcrypt = require("bcrypt");
 const dotenv = require("dotenv");
-dotenv.config();
+// const jwt = require("jsonwebtoken");
+
+// dotenv.config();
+const {
+  generateAccessToken,
+  generateRefreshToken,
+} = require("../middleware/auth/auth");
+
+// // Helper function to generate access token
+// const generateAccessToken = (user) => {
+//   return jwt.sign({ id: user._id, name: user.name }, process.env.JWT_SECRET, {
+//     expiresIn: process.env.JWT_ACCESS_EXPIRY,
+//   });
+// };
+
+// // Helper function to generate refresh token
+// const generateRefreshToken = (user) => {
+//   return jwt.sign(
+//     { id: user._id, name: user.name },
+//     process.env.JWT_REFRESH_SECRET,
+//     { expiresIn: process.env.JWT_REFRESH_EXPIRY }
+//   );
+// };
 
 // Get all users
 router.get(
@@ -45,11 +67,18 @@ router.post("/login", async (req, res) => {
         .status(401)
         .json({ success: false, message: "Invalid name or password." });
     }
-
+    const accessToken = generateAccessToken(user);
+    const refreshToken = generateRefreshToken(user);
     // Authentication successful
-    return res
-      .status(200)
-      .json({ success: true, message: "Login successful.", data: user.name });
+    return res.status(200).json({
+      success: true,
+      message: "Login successful.",
+      data: {
+        name: user.name,
+        accessToken: accessToken,
+        refreshToken: refreshToken,
+      },
+    });
   } catch (error) {
     console.error("Error during login:", error);
     return res.status(500).json({ success: false, message: error.message });
@@ -100,10 +129,17 @@ router.post(
       const user = new User({ name, password: hashedPassword });
       const newUser = await user.save();
 
+      const accessToken = generateAccessToken(user);
+      const refreshToken = generateRefreshToken(user);
+
       return res.json({
         success: true,
         message: "User created successfully.",
-        data: newUser.name,
+        data: {
+          name: user.name,
+          accessToken: accessToken,
+          refreshToken: refreshToken,
+        },
       });
     } catch (error) {
       console.error("Error creating user:", error);
