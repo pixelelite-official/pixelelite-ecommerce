@@ -4,6 +4,8 @@ const cors = require("cors");
 const mongoose = require("mongoose");
 const asyncHandler = require("express-async-handler");
 const dotenv = require("dotenv");
+const { authenticateToken } = require("./middleware/auth/auth");
+
 dotenv.config();
 
 const app = express();
@@ -22,18 +24,19 @@ db.on("error", (error) => console.error(error));
 db.once("open", () => console.log("Connected to Database"));
 
 // Routes
-app.use("/categories", require("./routes/category"));
-app.use("/subCategories", require("./routes/subCategory"));
-app.use("/brands", require("./routes/brand"));
-app.use("/variantTypes", require("./routes/variantType"));
-app.use("/variants", require("./routes/variant"));
-app.use("/products", require("./routes/product"));
-app.use("/couponCodes", require("./routes/couponCode"));
-app.use("/posters", require("./routes/poster"));
-app.use("/users", require("./routes/user"));
-app.use("/orders", require("./routes/order"));
-app.use("/payment", require("./routes/payment"));
-app.use("/notification", require("./routes/notification"));
+app.use("/categories", authenticateToken, require("./routes/category"));
+app.use("/subCategories", authenticateToken, require("./routes/subCategory"));
+app.use("/brands", authenticateToken, require("./routes/brand"));
+app.use("/variantTypes", authenticateToken, require("./routes/variantType"));
+app.use("/variants", authenticateToken, require("./routes/variant"));
+app.use("/products", authenticateToken, require("./routes/product"));
+app.use("/couponCodes", authenticateToken, require("./routes/couponCode"));
+app.use("/posters", authenticateToken, require("./routes/poster"));
+app.use("/users", authenticateToken, require("./routes/user"));
+app.use("/orders", authenticateToken, require("./routes/order"));
+app.use("/payment", authenticateToken, require("./routes/payment"));
+app.use("/notification", authenticateToken, require("./routes/notification"));
+app.use("/refreshToken", authenticateToken, require("./routes/refreshToken"));
 
 // Example route using asyncHandler directly in app.js
 app.get(
