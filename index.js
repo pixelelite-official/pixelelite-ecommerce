@@ -37,6 +37,7 @@ app.use("/orders", authenticateToken, require("./routes/order"));
 app.use("/payment", authenticateToken, require("./routes/payment"));
 app.use("/notification", authenticateToken, require("./routes/notification"));
 app.use("/refreshToken", authenticateToken, require("./routes/refreshToken"));
+app.use("/auth", require("./routes/auth-routes"));
 
 // Example route using asyncHandler directly in app.js
 app.get(
